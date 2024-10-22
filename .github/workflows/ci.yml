@@ -19,7 +19,7 @@ jobs:
         id: docker_meta
         uses: docker/metadata-action@v5
         with:
-          images: ${{ secrets.REGISTRY_USERNAME }}/${{ github.repository }}
+          images: ${{ github.repository }}
       -
         name: Set up QEMU
         uses: docker/setup-qemu-action@v3
@@ -50,5 +50,5 @@ jobs:
         with:
           username: ${{ secrets.REGISTRY_USERNAME }}
           password: ${{ secrets.REGISTRY_PASSWORD }}
-          repository: ${{ secrets.REGISTRY_USERNAME }}/${{ github.repository }}
+          repository: ${{ github.repository }}
           readme-filepath: ./README.md
