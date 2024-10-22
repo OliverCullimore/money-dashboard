@@ -1,0 +1,13 @@
+{
+  "autoload": {
+    "psr-4": {
+      "App\\": "app"
+    }
+  },
+  "require": {
+    "php": "^8.2",
+    "gammadia/slim-2.x": "^2.6",
+    "monolog/monolog": "^3.7",
+    "robmorgan/phinx": "^0.16.5"
+  }
+}

@@ -1,0 +1,28 @@
+services:
+  money-dashboard:
+    image: olivercullimore/money-dashboard
+    restart: unless-stopped
+    ports:
+      - 80:80
+    environment:
+      - DB_HOST=db
+      - DB_NAME=${DATABASE_NAME}
+      - DB_USER=${DATABASE_USER}
+      - DB_PASS=${DATABASE_PASSWORD}
+      - BASE_URL=${BASE_URL}
+      - GOCARDLESS_SECRET_ID=${GOCARDLESS_SECRET_ID}
+      - GOCARDLESS_SECRET_KEY=${GOCARDLESS_SECRET_KEY}
+
+  db:
+    image: mariadb:10.4
+    restart: unless-stopped
+    volumes:
+      - mariadb-data:/var/lib/mysql
+    environment:
+      MARIADB_ROOT_PASSWORD: ${DATABASE_PASSWORD}
+      MARIADB_DATABASE: ${DATABASE_NAME}
+      MARIADB_USER: ${DATABASE_USER}
+      MARIADB_PASSWORD: ${DATABASE_PASSWORD}
+
+volumes:
+  mariadb-data:

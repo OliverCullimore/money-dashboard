@@ -1,0 +1,37 @@
+services:
+  devcontainer:
+    build:
+      context: .
+      dockerfile: ../Dockerfile
+    volumes:
+      - ../..:/workspaces:cached
+    environment:
+      - DB_HOST=db
+      - DB_NAME=${DATABASE_NAME}
+      - DB_USER=${DATABASE_USER}
+      - DB_PASS=${DATABASE_PASSWORD}
+      - BASE_URL=${BASE_URL}
+      - GOCARDLESS_SECRET_ID=${GOCARDLESS_SECRET_ID}
+      - GOCARDLESS_SECRET_KEY=${GOCARDLESS_SECRET_KEY}
+    # Overrides default command so things don't shut down after the process ends.
+    command: sleep infinity
+    # Runs devcontainer on the same network as the database container, allows "forwardPorts" in devcontainer.json function.
+    network_mode: service:db
+    # Use "forwardPorts" in **devcontainer.json** to forward a port locally.
+    # (Adding the "ports" property to this file will not forward from a Codespace.)
+
+  db:
+    image: mariadb:10.4
+    restart: unless-stopped
+    volumes:
+      - mariadb-data:/var/lib/mysql
+    environment:
+      MARIADB_ROOT_PASSWORD: ${DATABASE_PASSWORD}
+      MARIADB_DATABASE: ${DATABASE_NAME}
+      MARIADB_USER: ${DATABASE_USER}
+      MARIADB_PASSWORD: ${DATABASE_PASSWORD}
+    # Use "forwardPorts" in **devcontainer.json** to forward an MariaDB port locally.
+    # (Adding the "ports" property to this file will not forward from a Codespace.)
+
+volumes:
+  mariadb-data:

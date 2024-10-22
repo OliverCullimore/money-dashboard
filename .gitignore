@@ -1,0 +1,25 @@
+# IDE files
+.idea/*
+.run/*
+.vscode/*
+
+# Exclude config & other files
+.env
+.env.*
+!.env.example
+config.json
+.DS_Store
+Thumbs.db
+
+# Vendor
+vendor/*
+
+# Cache
+/.cache
+/cache
+
+# Logs
+/logs/*
+
+# Always include .gitkeep
+!.gitkeep

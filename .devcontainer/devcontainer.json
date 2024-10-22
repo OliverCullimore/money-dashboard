@@ -1,0 +1,28 @@
+// For format details, see https://aka.ms/devcontainer.json. For config options, see the
+// README at: https://github.com/devcontainers/templates/tree/main/src/php-mariadb
+{
+  "name": "PHP & MariaDB",
+  "dockerComposeFile": "docker-compose.yml",
+  "service": "devcontainer",
+  "workspaceFolder": "/workspaces/${localWorkspaceFolderBasename}",
+
+  // Features to add to the dev container. More info: https://containers.dev/features.
+  "features": {
+    "ghcr.io/devcontainers/features/node:1": {}
+  },
+
+  // Use 'forwardPorts' to forward app & database ports locally.
+  "forwardPorts": [80, 3306],
+
+  // Use 'postStartCommand' to run commands after the container is started.
+  "postStartCommand": "apachectl start 2>/dev/null && browser-sync start --proxy \"localhost\" --files \"**/*\" --notify false",
+
+  // Use 'postCreateCommand' to run commands after the container is created.
+  "postCreateCommand": "a2enmod rewrite && usermod -u 1000 www-data && chmod a+x \"$(pwd)\" && rm -rf /var/www/html && ln -s \"$(pwd)/public_html\" /var/www/html && npm -g install browser-sync && ls -la \"$(pwd)\""
+
+  // Configure tool-specific properties.
+  // "customizations": {},
+
+  // Uncomment to connect as root instead. More info: https://aka.ms/dev-containers-non-root.
+  //"remoteUser": "root"
+}

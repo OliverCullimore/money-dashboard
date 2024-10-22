@@ -1,2 +1,2 @@
-# money-dashboard
-Money Dashboard
+# Money Dashboard
+A dashboard for your money.
