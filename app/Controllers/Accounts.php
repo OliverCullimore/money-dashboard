@@ -76,7 +76,7 @@ class Accounts
           }
           $accountDetails = GoCardless::getAccountDetails($requisitionAccount);
           // Update account name
-          Account::updateName($_SESSION['user_id'], $accountId, $accountDetails['account']['displayName'] ?? $accountDetails['account']['details']);
+          Account::updateName($_SESSION['user_id'], $accountId, $accountDetails['account']['displayName'] ?? ($accountDetails['account']['name'] ?? $accountDetails['account']['details']));
         }
         // Redirect to accounts list
         header('Location: /');
@@ -120,9 +120,20 @@ class Accounts
       if (!empty($accountBalances['balances'])) {
         // Calculate current balance
         $balance = 0;
+        $negativeClosing = false;
         foreach ($accountBalances['balances'] as $accountBalance) {
-          if (isset($accountBalance['balanceType']) && in_array($accountBalance['balanceType'], array('closingBooked')) && isset($accountBalance['balanceAmount']['amount'])) {
+          // Allowed balance types
+          $allowedBalanceTypes = array('closingBooked', 'closingAvailable');
+          // Allow interim balance if not a credit card
+          if (!$negativeClosing) {
+            $allowedBalanceTypes[] = 'interimAvailable';
+          }
+          // Check balance type is allowed
+          if (isset($accountBalance['balanceType']) && in_array($accountBalance['balanceType'], $allowedBalanceTypes) && isset($accountBalance['balanceAmount']['amount'])) {
             $balance += (float)$accountBalance['balanceAmount']['amount'];
+            if ($accountBalance['balanceType'] == 'closingBooked' && (float)$accountBalance['balanceAmount']['amount'] < 0) {
+              $negativeClosing = true;
+            }
           }
         }
         // Update account balance
@@ -137,8 +148,16 @@ class Accounts
             // Check for an existing transaction
             $transactionResult = Transaction::getByExternalId($account['account_id'], $transaction['internalTransactionId']);
             if (empty($transactionResult) || $transactionResult->num_rows == 0) {
+              // Define transaction details
+              $transactionDetails = ($transaction['remittanceInformationUnstructured'] ?? '');
+              if (!empty($transaction['creditorName']) && !str_contains($transactionDetails, $transaction['creditorName'])) {
+                $transactionDetails = $transaction['creditorName'] . ' ' . $transactionDetails;
+              }
+              if (str_contains($transactionDetails, 'Transaction Date:')) {
+                $transactionDetails = trim(preg_replace('/Transaction Date: ([0-9]+)-([0-9]+)-([0-9]+)/', '', $transactionDetails), ', ');
+              }
               // Create new transaction
-              Transaction::create($account['account_id'], $transaction['internalTransactionId'], $transaction['creditorName'], $transaction['transactionAmount']['amount'], date('Y-m-d H:i:s', strtotime($transaction['bookingDateTime'])));
+              Transaction::create($account['account_id'], $transaction['internalTransactionId'], $transactionDetails, $transaction['transactionAmount']['amount'], date('Y-m-d H:i:s', strtotime($transaction['bookingDateTime'])));
             }
           }
         }
