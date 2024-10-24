@@ -1,6 +1,6 @@
 <?php
 require('../vendor/autoload.php');
-require('../app/core/db.php');
+require('../app/Core/DB.php');
 
 ob_start();
 session_start();
@@ -18,7 +18,7 @@ $db = db_connect();
 $app = new \Slim\Slim(array(
   'debug' => true,
   'log.enabled' => true,
-  'templates.path' => '../app/views',
+  'templates.path' => '../app/Views',
 ));
 
 // Create monolog logger and store logger in container as singleton
@@ -30,7 +30,7 @@ $app->container->singleton('log', function () {
 });
 
 // Register routes
-require('../app/routes/routes.php');
+require('../app/Routes/Routes.php');
 
 // Auth middleware
 $app->add(new \App\Middlewares\Auth());
