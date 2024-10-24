@@ -1,8 +1,11 @@
 # Base php apache image
 FROM php:8.3-apache
 
+# Install git & zip
+RUN apt-get update && apt-get install -y git libzip-dev
+
 # Install php-mysql driver
-RUN docker-php-ext-install mysqli pdo pdo_mysql
+RUN docker-php-ext-install mysqli pdo pdo_mysql zip
 
 # Install composer
 COPY --from=composer /usr/bin/composer /usr/bin/composer
