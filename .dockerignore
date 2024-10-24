@@ -4,6 +4,7 @@
 
 # Exclude docker files.
 .dockerignore
+Dockerfile
 docker-compose.yml
 
 # Exclude env files.
@@ -11,6 +12,7 @@ docker-compose.yml
 .env.example
 
 # Exclude git files.
+.git
 .github
 .gitignore
 
