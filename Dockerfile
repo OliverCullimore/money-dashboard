@@ -23,8 +23,17 @@ COPY . /var/www
 WORKDIR /var/www
 
 # Install dependancies
-RUN composer install
+#RUN composer install
 
 # Update apache configuration
 RUN sed -ri -e 's!/var/www/html!/var/www/public_html!g' /etc/apache2/sites-available/000-default.conf
 RUN sed -ri -e 's!/var/www/!/var/www/public_html!g' /etc/apache2/apache2.conf /etc/apache2/conf-available/docker-php.conf
+
+# Enable apache rewrite
+RUN a2enmod rewrite
+
+# Update user & folder permissions
+RUN usermod -u 1000 www-data && chmod a+x "$(pwd)"
+
+# Start apache
+CMD apachectl start

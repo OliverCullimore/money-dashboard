@@ -15,10 +15,11 @@
   "forwardPorts": [80, 3306],
 
   // Use 'postStartCommand' to run commands after the container is started.
-  "postStartCommand": "apachectl start 2>/dev/null && browser-sync start --proxy \"localhost\" --files \"**/*\" --notify false",
+  //"postStartCommand": "apachectl start 2>/dev/null && browser-sync start --proxy \"localhost\" --files \"**/*\" --notify false",
+  //"postStartCommand": "browser-sync start --proxy \"localhost\" --files \"**/*\" --notify false",
 
   // Use 'postCreateCommand' to run commands after the container is created.
-  "postCreateCommand": "a2enmod rewrite && usermod -u 1000 www-data && chmod a+x \"$(pwd)\" && rm -rf /var/www/html && ln -s \"$(pwd)/public_html\" /var/www/html && npm -g install browser-sync && ls -la \"$(pwd)\""
+  //"postCreateCommand": "npm -g install browser-sync && ls -la \"$(pwd)\""
 
   // Configure tool-specific properties.
   // "customizations": {},
